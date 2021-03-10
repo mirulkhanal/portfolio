@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProjectsContainer } from '../Projects/ProjectStyledComponents'
+// import { ProjectsContainer } from '../Projects/ProjectStyledComponents'
 import {
   NavBrand,
   NavContainer,
