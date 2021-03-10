@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import { gsap } from 'gsap'
+import React, { useState } from 'react'
+import './App.css'
+import AboutMe from './components/About/AboutMe'
+import Hero from './components/Hero/Hero'
+import NavBar from './components/Navbar/NavBar'
+import { useEffect } from 'react'
+import Projects from './components/Projects/Projects'
+import { FloatIcon } from './components/About/StyledAboutComponents'
+import ScrollToPlugin from 'gsap/dist/ScrollToPlugin'
+gsap.registerPlugin(ScrollToPlugin)
+const App = () => {
+  const [showTop, setShowStop] = useState(false)
+  useEffect(() => {
+    gsap.to('.App', {
+      display: 'block',
+    })
+  }, [])
+  useEffect(() => {
+    window.addEventListener('scroll', function () {
+      if (this.scrollY > 600) {
+        setShowStop(true)
+      } else {
+        setShowStop(false)
+      }
+    })
+  }, [])
+  const handleTopClick = () => {
+    console.log('cicked')
+    gsap.to(window, {
+      scrollTo: {
+        y: 0,
+        ease: 'easeInOut',
+      },
+    })
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <NavBar />
+      <Hero />
+      <FloatIcon
+        id='float__icon'
+        className={showTop ? 'show' : 'hidden'}
+        onClick={handleTopClick}
+      />
+      <AboutMe />
+      <Projects />
     </div>
-  );
+  )
 }
-
-export default App;
+export default App
