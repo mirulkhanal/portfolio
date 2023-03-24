@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-const Card = ({ repo }) => {
-  const { name, description, html_url } = repo;
+const Card = ({ repo, btnTitle }) => {
+  const { name, description, html_url, image } = repo;
   console.log('Card', name);
   return (
     <div className='card w-96 bg-base-100 shadow-xl'>
       <figure className='px-10 pt-10'>
         <img
-          src='https://placeimg.com/400/225/arch'
+          src={image || 'https://placeimg.com/400/225/arch'}
           alt='Shoes'
           className='rounded-xl'
         />
@@ -18,7 +17,7 @@ const Card = ({ repo }) => {
         <p>{description}</p>
         <div className='card-actions'>
           <a className='btn btn-primary' href={html_url} target='_blank'>
-            View Repo
+            {btnTitle}
           </a>
         </div>
       </div>

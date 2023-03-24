@@ -7,8 +7,8 @@ const Hero = () => {
     <div className='hero min-h-screen bg-base-200'>
       <div className='hero-content flex-col lg:flex-row-reverse'>
         <img
-          src='/image.png'
-          className='max-w-sm rounded-lg shadow-2xl border border-primary'
+          src='/mirul.png'
+          className='max-w-sm rounded-lg border border-primary'
         />
         <div>
           <h1 className='text-5xl font-bold'>
