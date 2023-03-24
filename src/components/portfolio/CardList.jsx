@@ -9,7 +9,7 @@ const CardList = ({ repos, title, btnTitle }) => {
           {title}
         </h1>
       </div>
-      <div className='flex flex-wrap items-center justify-center '>
+      <div className='flex flex-wrap items-center justify-center gap-4 p-10 '>
         {repos &&
           repos.map((repo) => (
             <Card repo={repo} key={repo.id} btnTitle={btnTitle} />

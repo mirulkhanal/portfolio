@@ -4,10 +4,10 @@ const Card = ({ repo, btnTitle }) => {
   const { name, description, html_url, image } = repo;
   console.log('Card', name);
   return (
-    <div className='card w-96 bg-base-100 shadow-xl'>
+    <div className='card w-96 bg-base-100 shadow-xl h-96 mx-2'>
       <figure className='px-10 pt-10'>
         <img
-          src={image || 'https://placeimg.com/400/225/arch'}
+          src={image || 'https://picsum.photos/400'}
           alt='Shoes'
           className='rounded-xl'
         />
