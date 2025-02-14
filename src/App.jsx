@@ -1,6 +1,3 @@
-import Hero from './components/hero/Hero';
-import Footer from './components/layout/Footer';
-import Navbar from './components/layout/Navbar';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';

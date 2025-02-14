@@ -1,38 +1,52 @@
+// src/context/GithubContext.js
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const GithubContext = createContext({
   repos: [],
   user: {},
+  loading: true,
+  error: null,
 });
 
 const GithubProvider = ({ children }) => {
-  const [repos, setRepos] = useState([]);
-  const [user, setUser] = useState({});
+  const [state, setState] = useState({
+    repos: [],
+    user: {},
+    loading: true,
+    error: null,
+  });
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const response = await axios.get(
-        'https://api.github.com/users/mirulkhanal'
-      );
+    const fetchData = async () => {
+      try {
+        const [userResponse, reposResponse] = await Promise.all([
+          axios.get('https://api.github.com/users/mirulkhanal'),
+          axios.get(
+            'https://api.github.com/users/mirulkhanal/repos?page=1&per_page=20'
+          ),
+        ]);
 
-      setUser(response.data);
+        setState({
+          user: userResponse.data,
+          repos: reposResponse.data,
+          loading: false,
+          error: null,
+        });
+      } catch (error) {
+        setState({
+          ...state,
+          loading: false,
+          error: error.message,
+        });
+      }
     };
-    const fetchRepos = async () => {
-      const response = await axios.get(
-        'https://api.github.com/users/mirulkhanal/repos?page=1&per_page=20'
-      );
 
-      setRepos(response.data);
-    };
-
-    fetchUser();
-    fetchRepos();
+    fetchData();
   }, []);
+
   return (
-    <GithubContext.Provider value={{ repos, user }}>
-      {children}
-    </GithubContext.Provider>
+    <GithubContext.Provider value={state}>{children}</GithubContext.Provider>
   );
 };
 
