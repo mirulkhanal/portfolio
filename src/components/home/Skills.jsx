@@ -19,35 +19,70 @@ const SkillGrid = styled.div`
 const SkillCard = styled.div`
   padding: 2rem;
   background: ${({ theme }) => theme.background};
-  border-radius: 10px;
+  border-radius: 15px;
   text-align: center;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 
   &:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const SkillIcon = styled.div`
   font-size: 2.5rem;
   color: ${({ theme }) => theme.primary};
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+
+  ${SkillCard}:hover & {
+    transform: rotate(15deg);
+  }
 `;
 
 const SkillTitle = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: ${({ theme }) => theme.text};
+  position: relative;
+  padding-bottom: 0.5rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: ${({ theme }) => theme.primary};
+  }
 `;
 
-const SkillList = styled.ul`
-  list-style: none;
-  padding: 0;
+const SkillList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
 `;
 
-const SkillItem = styled.li`
-  margin: 0.5rem 0;
-`;
+const SkillItem = styled.span`
+  padding: 0.5rem 1rem;
+  background: ${({ theme }) => theme.primary + '20'};
+  color: ${({ theme }) => theme.text};
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid ${({ theme }) => theme.primary + '30'};
 
+  &:hover {
+    background: ${({ theme }) => theme.primary + '40'};
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+`;
 const Skills = () => {
   const skillsData = [
     {

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const HeroContainer = styled.section`
   display: flex;
-  min-height: 100vh;
+  min-height: 80vh;
   padding: 2rem;
   align-items: center;
   background: ${({ theme }) => theme.background};
@@ -68,18 +68,17 @@ const Hero = () => {
   return (
     <HeroContainer>
       <HeroContent>
-        <HeroImage src='/mirul.png' alt='Mirul Khanal' />
+        <HeroImage src='/avatar.webp' alt='Mirul Khanal' />
         <HeroText>
           <Title>
             Hi, I'm Mirul Khanal. <br />
             I am a <DynamicTitle />
           </Title>
           <Bio>
-            Full Stack MERN Developer with 3+ years of experience building
-            scalable web applications. Currently pursuing BSc in Computer
-            Science with expertise in React, Node.js, and Machine Learning.
-            Passionate about solving complex problems and delivering
-            high-quality solutions.
+            Hi there, I'm Mirul. I'm a Full Stack Developer who specializes in
+            websites, mobile apps, APIs, and dashboards development. I have 3+
+            years of experience delivering end-to-end solutions from development
+            to cloud deployment, YOU'RE IN SAFE HANDS.
           </Bio>
           <CTAButton to='/portfolio'>View Projects</CTAButton>
         </HeroText>

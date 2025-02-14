@@ -5,7 +5,10 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
-  const toggleTheme = () => setIsDark(!isDark);
+  const toggleTheme = () => {
+    console.log(isDark);
+    setIsDark((isDark) => !isDark);
+  };
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>

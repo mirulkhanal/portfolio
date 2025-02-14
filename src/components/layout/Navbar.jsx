@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTheme } from '../../context/ThemeContext';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { useEffect } from 'react';
 
 const NavContainer = styled.nav`
   display: flex;
@@ -121,6 +122,9 @@ const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
+  useEffect(() => {
+    console.log('PAGE MODE SWITCHED: ', isDark ? 'Dark' : 'Light');
+  }, [isDark]);
   return (
     <NavContainer>
       <Brand to='/'>

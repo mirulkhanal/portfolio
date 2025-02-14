@@ -4,10 +4,13 @@ import styled, { keyframes } from 'styled-components';
 import useTitle, { Phase } from './useTitle';
 
 const titles = [
-  { title: 'Full Stack Developer' },
-  { title: 'Machine Learning Engineer' },
+  { title: 'MERN Web Developer' },
   { title: 'Mobile App Developer' },
-  { title: 'Python & TensorFlow Expert' },
+  { title: 'NestJs w/ Express & GraphQL API Developer' },
+  { title: 'Freelance developer' },
+  { title: 'Video games enjoyer' },
+  { title: 'Occasional Movies, TV Shows and Anime watcher' },
+  { title: 'Classic Rock, Indie & Synthwave listener' },
 ];
 
 const blink = keyframes`

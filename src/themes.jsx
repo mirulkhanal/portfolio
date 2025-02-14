@@ -16,7 +16,7 @@ export const darkTheme = {
   primary: '#27ae60',
   secondary: '#2980b9',
   accent: '#c0392b',
-  background: '#2c3e50',
+  background: '#12161a',
 };
 
 export const GlobalStyles = createGlobalStyle`
