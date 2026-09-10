@@ -148,6 +148,26 @@ const CVButton = styled.a`
   }
 `;
 
+const MobileCVButton = styled.a`
+  && {
+    display: inline-flex;
+    min-height: 46px;
+    margin-top: 0.45rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    border: 1px solid ${({ theme }) => theme.primary};
+    background: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.onPrimary};
+
+    &:hover {
+      border-color: ${({ theme }) => theme.primaryStrong};
+      background: ${({ theme }) => theme.primaryStrong};
+      color: ${({ theme }) => theme.onPrimary};
+    }
+  }
+`;
+
 const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -224,9 +244,9 @@ const Navbar = () => {
             {item.label}
           </NavLink>
         ))}
-        <a href={profile.resumePath} download>
-          Download résumé PDF
-        </a>
+        <MobileCVButton href={profile.resumePath} download>
+          Download résumé PDF <FaDownload aria-hidden='true' />
+        </MobileCVButton>
       </MobileMenu>
     </NavContainer>
   );

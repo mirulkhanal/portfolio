@@ -36,13 +36,13 @@ const HeroContent = styled.div`
   }
 `;
 
-const HeroImage = styled.img`
+const HeroPortrait = styled.div`
   width: min(100%, 330px);
   aspect-ratio: 1;
+  overflow: hidden;
   border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.borderStrong};
   box-shadow: 0 24px 65px ${({ theme }) => theme.shadow};
-  object-fit: cover;
   justify-self: end;
 
   @media (max-width: 760px) {
@@ -50,6 +50,14 @@ const HeroImage = styled.img`
     width: 180px;
     justify-self: start;
   }
+`;
+
+const HeroImage = styled.img`
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 24%;
 `;
 
 const HeroText = styled.div`
@@ -129,13 +137,15 @@ const Hero = () => {
           </Actions>
           <Availability>{profile.availability}</Availability>
         </HeroText>
-        <HeroImage
-          src={profile.avatarPath}
-          alt={`${profile.name}, ${profile.role}`}
-          width='330'
-          height='330'
-          fetchPriority='high'
-        />
+        <HeroPortrait>
+          <HeroImage
+            src={profile.avatarPath}
+            alt={`${profile.name}, ${profile.role}`}
+            width='330'
+            height='330'
+            fetchPriority='high'
+          />
+        </HeroPortrait>
       </HeroContent>
     </HeroContainer>
   );
