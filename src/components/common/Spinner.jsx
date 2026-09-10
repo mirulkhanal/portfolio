@@ -1,4 +1,3 @@
-// src/components/common/Loading.js
 import styled, { keyframes } from 'styled-components';
 
 const spin = keyframes`
@@ -7,7 +6,7 @@ const spin = keyframes`
 `;
 
 const Spinner = styled.div`
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  border: 4px solid ${({ theme }) => theme.border};
   border-top: 4px solid ${({ theme }) => theme.primary};
   border-radius: 50%;
   width: 40px;
@@ -16,4 +15,21 @@ const Spinner = styled.div`
   margin: 2rem auto;
 `;
 
-export const Loading = () => <Spinner />;
+const VisuallyHidden = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+`;
+
+export const Loading = ({ label = 'Loading' }) => (
+  <div role='status'>
+    <Spinner aria-hidden='true' />
+    <VisuallyHidden>{label}</VisuallyHidden>
+  </div>
+);

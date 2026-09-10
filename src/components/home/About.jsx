@@ -1,149 +1,191 @@
-// src/components/about/About.js
-import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const AboutContainer = styled.section`
-  padding: 4rem 2rem;
-  background: ${({ theme }) => theme.background};
-  color: ${({ theme }) => theme.text};
-`;
+import { FaArrowRight } from 'react-icons/fa';
+import { profile } from '../../data/profile';
+import {
+  Eyebrow,
+  SectionBlock,
+  SectionInner,
+  SectionTitle,
+  SecondaryLink,
+} from '../common/Section';
 
 const AboutContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.6fr) minmax(0, 1.4fr);
+  gap: clamp(2rem, 7vw, 6rem);
   align-items: center;
-  gap: 2rem;
 
-  @media (min-width: 768px) {
-    flex-direction: row;
-    gap: 4rem;
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const AboutImage = styled.div`
-  flex: 1;
-  max-width: 300px;
-  img {
-    width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+const Portrait = styled.img`
+  width: min(100%, 320px);
+  aspect-ratio: 4 / 5;
+  border-radius: 1.25rem;
+  object-fit: cover;
+  object-position: center 20%;
+  box-shadow: 0 20px 60px ${({ theme }) => theme.shadow};
+
+  @media (max-width: 720px) {
+    width: 200px;
   }
 `;
 
 const AboutText = styled.div`
-  flex: 2;
-  text-align: center;
-
-  @media (min-width: 768px) {
-    text-align: left;
-  }
+  max-width: 720px;
 `;
 
 const Bio = styled.div`
-  font-size: 1.1rem;
+  margin: 1.5rem 0 0;
+  color: ${({ theme }) => theme.textMuted};
+  font-size: clamp(1rem, 2vw, 1.15rem);
   line-height: 1.8;
-  margin-bottom: 1.5rem;
-  text-align: justify;
-  hyphens: auto;
 
   p {
-    margin-bottom: 1.2rem;
+    margin: 0 0 1rem;
+
     &:last-child {
       margin-bottom: 0;
     }
   }
-
-  @media (min-width: 768px) {
-    font-size: 1.15rem;
-  }
 `;
 
-const Traits = styled.div`
+const Actions = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 2rem;
+  gap: 0.8rem;
+  margin-top: 1.75rem;
+`;
 
-  @media (min-width: 768px) {
-    justify-content: flex-start;
+const PersonalGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const Trait = styled.span`
-  padding: 0.5rem 1rem;
-  background: ${({ theme }) => theme.primary + '20'};
-  color: ${({ theme }) => theme.text};
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  border: 1px solid ${({ theme }) => theme.primary + '30'};
+const PersonalCard = styled.article`
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 1.15rem;
+  background: ${({ theme }) => theme.surface};
+  overflow: hidden;
 `;
 
-const CTAButton = styled.a`
-  padding: 0.8rem 2rem;
-  background: ${({ theme }) => theme.primary};
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: transform 0.2s, background 0.2s;
+const PersonalImage = styled.img`
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: ${({ theme }) => theme.surfaceSubtle};
+  object-fit: ${({ $contain }) => ($contain ? 'contain' : 'cover')};
+  object-position: center;
+`;
 
-  &:hover {
-    background: ${({ theme }) => theme.secondary};
-    transform: translateY(-2px);
+const PersonalContent = styled.div`
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+
+  h3 {
+    margin: 0;
+    color: ${({ theme }) => theme.text};
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+  }
+
+  p {
+    margin: 0.75rem 0 0;
+    color: ${({ theme }) => theme.textMuted};
+    line-height: 1.7;
   }
 `;
 
 const About = () => {
   return (
-    <AboutContainer>
-      <AboutContent>
-        <AboutImage>
-          <img src={'mirul.png'} alt='Mirul Khanal' />
-        </AboutImage>
-        <AboutText>
-          <h2>About Me</h2>
-          <Bio>
-            <p>
-              Hi there! I'm Mirul, a Full Stack Developer who thrives on
-              building solutions that scale. By day, I architect websites,
-              mobile apps, and APIs while optimizing deployments for peak
-              performance. By night, you'll find me tinkering with new tools or
-              working on side projects when inspiration strikes.
-            </p>
+    <SectionBlock id='about' $surface aria-labelledby='about-title'>
+      <SectionInner>
+        <AboutContent>
+          <Portrait
+            src={profile.avatarPath}
+            alt=''
+            width='320'
+            height='400'
+            loading='lazy'
+          />
+          <AboutText>
+            <Eyebrow>About</Eyebrow>
+            <SectionTitle id='about-title'>
+              Practical engineering, grounded in the product.
+            </SectionTitle>
+            <Bio>
+              <p>
+                I work across the stack, but the goal is always the same: turn
+                a complex requirement into software that is understandable,
+                dependable, and useful to the people operating it.
+              </p>
+              <p>
+                My experience spans SaaS architecture, web and mobile
+                interfaces, authentication, data pipelines, applied AI, and
+                deployment. That breadth helps me make trade-offs with the
+                whole system in mind.
+              </p>
+              <p>
+                I learn new tools quickly, communicate directly, and keep
+                business outcomes close to technical decisions.
+              </p>
+            </Bio>
+            <Actions>
+              <SecondaryLink as={Link} to='/resume'>
+                Read my full experience <FaArrowRight aria-hidden='true' />
+              </SecondaryLink>
+            </Actions>
+          </AboutText>
+        </AboutContent>
 
-            <p>
-              I pride myself on balancing precision with creativity—whether
-              debugging a stubborn API endpoint or brainstorming user-friendly
-              dashboards. My approach combines technical excellence with
-              collaborative problem-solving, always aiming to transform complex
-              requirements into elegant solutions.
-            </p>
+        <PersonalGrid aria-label='The people and pets closest to me'>
+          <PersonalCard>
+            <PersonalImage
+              src='/wife.jpg'
+              alt='Mirul with his wife, Anisa'
+              width='1024'
+              height='640'
+              loading='lazy'
+            />
+            <PersonalContent>
+              <Eyebrow>My better half</Eyebrow>
+              <h3>My wife, Anisa</h3>
+              <p>
+                Anisa aspires to become a nurse and loves settling in for a
+                good suspense thriller. She is a huge part of who I am outside
+                work.
+              </p>
+            </PersonalContent>
+          </PersonalCard>
 
-            <p>
-              When not coding, you'll catch me exploring the latest tech trends
-              or contributing to open-source projects. Let's build something
-              impactful <em>and</em> enjoy the process!
-            </p>
-          </Bio>
-          <Traits>
-            <Trait>Table tennis</Trait>
-            <Trait>Python Scripting</Trait>
-            <Trait>Mobile games</Trait>
-            <Trait>Classic Rock & Synthwave Music</Trait>
-          </Traits>
-          <CTAButton
-            href='/resume.pdf'
-            target='_blank'
-            rel='noopener noreferrer'>
-            Download Resume
-          </CTAButton>
-        </AboutText>
-      </AboutContent>
-    </AboutContainer>
+          <PersonalCard>
+            <PersonalImage
+              src='/Django.jpg'
+              alt="Django, Mirul's American Bully"
+              width='1024'
+              height='640'
+              loading='lazy'
+              $contain
+            />
+            <PersonalContent>
+              <Eyebrow>Our four-legged family</Eyebrow>
+              <h3>My dog, Django</h3>
+              <p>
+                Django is our sweet American Bully. His favorite things are
+                playing fetch, spending time with us, and eating rabbit-ear
+                treats.
+              </p>
+            </PersonalContent>
+          </PersonalCard>
+        </PersonalGrid>
+      </SectionInner>
+    </SectionBlock>
   );
 };
 

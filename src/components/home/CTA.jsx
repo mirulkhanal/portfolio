@@ -1,114 +1,86 @@
-// src/components/cta/CTA.js
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import { FaPaperPlane, FaFolderOpen } from 'react-icons/fa';
+import styled from 'styled-components';
+import { FaArrowRight, FaEnvelope } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-
-const gradientAnimation = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-`;
-
-const float = keyframes`
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
-`;
+import { profile } from '../../data/profile';
+import { PrimaryLink, SecondaryLink } from '../common/Section';
 
 const CTAContainer = styled.section`
-  padding: 6rem 2rem;
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.primary},
-    ${({ theme }) => theme.secondary},
-    ${({ theme }) => theme.accent}
-  );
-  background-size: 400% 400%;
-  animation: ${gradientAnimation} 12s ease infinite;
-  color: white;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+  padding: clamp(4rem, 8vw, 7rem) clamp(1rem, 4vw, 2rem);
+  background: ${({ theme }) => theme.body};
 `;
 
 const ContentWrapper = styled.div`
-  max-width: 800px;
+  width: min(1120px, 100%);
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
-  animation: ${float} 4s ease-in-out infinite;
+  padding: clamp(2rem, 6vw, 4.5rem);
+  border-radius: 1.5rem;
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.onPrimary};
+  text-align: center;
 `;
 
 const Heading = styled.h2`
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
+  max-width: 16ch;
+  margin: 0 auto;
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
 `;
 
 const SubText = styled.p`
-  font-size: 1.2rem;
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
-  opacity: 0.9;
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
+  max-width: 650px;
+  margin: 1.25rem auto 0;
+  color: ${({ theme }) => theme.onPrimaryMuted};
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 0.75rem;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 2rem;
 `;
 
-const CTAButton = styled(Link)`
-  padding: 1rem 2rem;
-  background: ${(props) =>
-    props.primary ? 'white' : 'rgba(255, 255, 255, 0.1)'};
-  color: ${(props) => (props.primary ? ({ theme }) => theme.primary : 'white')};
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  transition: all 0.3s ease;
-  border: 2px solid white;
+const LightPrimaryLink = styled(PrimaryLink)`
+  border-color: ${({ theme }) => theme.onPrimary};
+  background: ${({ theme }) => theme.onPrimary};
+  color: ${({ theme }) => theme.primaryStrong};
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    background: ${(props) =>
-      props.primary ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.2)'};
+    border-color: white;
+    background: white;
+  }
+`;
+
+const LightSecondaryLink = styled(SecondaryLink)`
+  border-color: ${({ theme }) => theme.onPrimaryBorder};
+  color: ${({ theme }) => theme.onPrimary};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.onPrimary};
+    background: ${({ theme }) => theme.onPrimarySoft};
   }
 `;
 
 const CTA = () => {
   return (
-    <CTAContainer>
+    <CTAContainer aria-labelledby='contact-cta-title'>
       <ContentWrapper>
-        <Heading>Let's Build Something Amazing Together!</Heading>
+        <Heading id='contact-cta-title'>Have a difficult problem to ship?</Heading>
         <SubText>
-          Have a project in mind? Whether it's web development, mobile apps, or
-          machine learning solutions - I'm ready to bring your ideas to life
-          with cutting-edge technology.
+          I am open to conversations about full-stack platforms, applied AI,
+          mobile products, and engineering roles where broad product ownership
+          matters.
         </SubText>
         <ButtonGroup>
-          <CTAButton to={'/contact'} primary>
-            <FaPaperPlane />
-            Contact Me
-          </CTAButton>
-          <CTAButton to='/portfolio'>
-            <FaFolderOpen />
-            View Portfolio
-          </CTAButton>
+          <LightPrimaryLink href={`mailto:${profile.email}`}>
+            Email Mirul <FaEnvelope aria-hidden='true' />
+          </LightPrimaryLink>
+          <LightSecondaryLink as={Link} to='/contact'>
+            Contact details <FaArrowRight aria-hidden='true' />
+          </LightSecondaryLink>
         </ButtonGroup>
       </ContentWrapper>
     </CTAContainer>

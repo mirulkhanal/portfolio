@@ -6,11 +6,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { lightTheme, darkTheme, GlobalStyles } from './themes';
-import GithubProvider from './context/GithubContext';
+import './index.css';
 
-// Create new component
 const ThemeWrapper = () => {
-  const { isDark } = useTheme(); // Get theme state
+  const { isDark } = useTheme();
 
   return (
     <StyledThemeProvider theme={isDark ? darkTheme : lightTheme}>
@@ -22,14 +21,11 @@ const ThemeWrapper = () => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-// main.jsx
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <GithubProvider>
-          <ThemeWrapper /> {/* New wrapper component */}
-        </GithubProvider>
+        <ThemeWrapper />
       </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>

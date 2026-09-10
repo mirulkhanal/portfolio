@@ -1,140 +1,253 @@
-// src/components/projects/FeaturedProjects.js
-import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaExternalLinkAlt } from 'react-icons/fa';
-import { data as companyProjects } from '../../companyProjects';
-
-const ProjectsContainer = styled.section`
-  padding: 4rem 2rem;
-  background: ${({ theme }) => theme.body};
-  color: ${({ theme }) => theme.text};
-`;
+import { FaArrowRight, FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
+import { curatedProjects } from '../../data/projects';
+import {
+  Eyebrow,
+  SectionBlock,
+  SectionHeader,
+  SectionInner,
+  SectionIntro,
+  SectionTitle,
+  SecondaryLink,
+  Tag,
+  TagList,
+} from '../common/Section';
 
 const ProjectsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-`;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 
-const ProjectCard = styled.div`
-  background: ${({ theme }) => theme.background};
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-
-  &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const ProjectImage = styled.div`
-  height: 200px;
+const ProjectCard = styled.article`
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 1.15rem;
+  background: ${({ theme }) => theme.surface};
   overflow: hidden;
+  transition: border-color 160ms ease, transform 160ms ease,
+    box-shadow 160ms ease;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
+  &:hover,
+  &:focus-within {
+    border-color: ${({ theme }) => theme.primary};
+    box-shadow: 0 18px 45px ${({ theme }) => theme.shadow};
+    transform: translateY(-3px);
   }
+`;
 
-  ${ProjectCard}:hover & img {
-    transform: scale(1.1);
-  }
+const ProjectVisual = styled.div`
+  position: relative;
+  display: flex;
+  min-height: 9rem;
+  padding: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  background: ${({ $tone, theme }) =>
+    theme.projectTones[$tone] || theme.primarySoft};
+  color: ${({ theme }) => theme.text};
+`;
+
+const ProjectImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1.15rem;
+  background: ${({ theme }) => theme.surface};
+  object-fit: contain;
+`;
+
+const ProjectMark = styled.span`
+  display: grid;
+  width: 3.25rem;
+  height: 3.25rem;
+  place-items: center;
+  border: 1px solid ${({ theme }) => theme.visualBorder};
+  border-radius: 0.9rem;
+  background: ${({ theme }) => theme.visualSurface};
+  color: ${({ theme }) => theme.visualText};
+  font-size: 1rem;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+`;
+
+const ProjectMeta = styled.span`
+  position: relative;
+  z-index: 1;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.visualSurface};
+  color: ${({ theme }) => theme.visualText};
+  font-size: 0.75rem;
+  font-weight: 750;
 `;
 
 const ProjectContent = styled.div`
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+`;
+
+const ProjectEyebrow = styled.p`
+  margin: 0 0 0.45rem;
+  color: ${({ theme }) => theme.primary};
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.primary};
+  margin: 0;
+  color: ${({ theme }) => theme.text};
+  font-size: clamp(1.25rem, 3vw, 1.65rem);
 `;
 
 const ProjectDescription = styled.p`
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  margin: 0.8rem 0 1.25rem;
+  color: ${({ theme }) => theme.textMuted};
+  line-height: 1.65;
+`;
+
+const Detail = styled.p`
+  margin: 0 0 0.75rem;
+  color: ${({ theme }) => theme.textSubtle};
+  font-size: 0.9rem;
+  line-height: 1.55;
+
+  strong {
+    color: ${({ theme }) => theme.text};
+  }
 `;
 
 const ProjectLinks = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
-`;
+  margin-top: auto;
+  padding-top: 1.35rem;
 
-const ProjectLink = styled.a`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: ${({ theme }) => theme.primary};
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme.secondary};
+  a {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: center;
+    color: ${({ theme }) => theme.primary};
+    font-size: 0.88rem;
+    font-weight: 750;
   }
 `;
 
-const ViewAllButton = styled.a`
-  display: inline-block;
-  margin: 2rem auto 0;
-  padding: 0.8rem 2rem;
-  background: ${({ theme }) => theme.primary};
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: transform 0.2s, background 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme.secondary};
-    transform: translateY(-2px);
-  }
+const FooterAction = styled.div`
+  margin-top: 2rem;
 `;
 
-const FeaturedProjects = () => {
-  // Select first 3 projects for featured section
-  const featuredProjects = companyProjects.slice(0, 3);
+export const CuratedProjectGrid = ({ projects = curatedProjects }) => (
+  <ProjectsGrid>
+    {projects.map((project) => (
+      <ProjectCard key={project.id}>
+        <ProjectVisual $tone={project.tone} aria-hidden='true'>
+          {project.image ? (
+            <ProjectImage
+              src={project.image}
+              alt=''
+              width='640'
+              height='360'
+              loading='lazy'
+            />
+          ) : (
+            <ProjectMark>
+              {project.title
+                .split(' ')
+                .slice(0, 2)
+                .map((word) => word[0])
+                .join('')}
+            </ProjectMark>
+          )}
+          <ProjectMeta>{project.year}</ProjectMeta>
+        </ProjectVisual>
+        <ProjectContent>
+          <ProjectEyebrow>
+            {project.eyebrow} · {project.kind} · {project.year}
+          </ProjectEyebrow>
+          <ProjectTitle>{project.title}</ProjectTitle>
+          <ProjectDescription>{project.summary}</ProjectDescription>
+          <Detail>
+            <strong>Role:</strong> {project.role}
+          </Detail>
+          <Detail>
+            <strong>Contribution:</strong> {project.contribution}
+          </Detail>
+          <Detail>
+            <strong>Outcome:</strong> {project.outcome}
+          </Detail>
+          <TagList aria-label={`${project.title} technology`}>
+            {project.stack.map((technology) => (
+              <Tag key={technology}>{technology}</Tag>
+            ))}
+          </TagList>
+          <ProjectLinks>
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target='_blank'
+                rel='noopener noreferrer'>
+                Live project <FaExternalLinkAlt aria-hidden='true' />
+              </a>
+            )}
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target='_blank'
+                rel='noopener noreferrer'>
+                Source <FaGithub aria-hidden='true' />
+              </a>
+            )}
+            {!project.repoUrl && !project.liveUrl && (
+              <ProjectMeta>{project.access}</ProjectMeta>
+            )}
+          </ProjectLinks>
+        </ProjectContent>
+      </ProjectCard>
+    ))}
+  </ProjectsGrid>
+);
+
+const FeaturedProjects = ({ limit = 4, showAllLink = true }) => {
+  const featuredProjects = curatedProjects
+    .filter((project) => project.featured)
+    .slice(0, limit || undefined);
 
   return (
-    <ProjectsContainer>
-      <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        Featured Projects
-      </h2>
-      <ProjectsGrid>
-        {featuredProjects.map((project, index) => (
-          <ProjectCard key={index}>
-            <ProjectImage>
-              <img src={project.image} alt={project.name} />
-            </ProjectImage>
-            <ProjectContent>
-              <ProjectTitle>{project.name}</ProjectTitle>
-              <ProjectDescription>{project.description}</ProjectDescription>
-              <ProjectLinks>
-                <ProjectLink
-                  href={project.html_url}
-                  target='_blank'
-                  rel='noopener noreferrer'>
-                  <FaExternalLinkAlt /> Live Demo
-                </ProjectLink>
-              </ProjectLinks>
-            </ProjectContent>
-          </ProjectCard>
-        ))}
-      </ProjectsGrid>
-      <div style={{ textAlign: 'center' }}>
-        <ViewAllButton href='/portfolio'>View All Projects</ViewAllButton>
-      </div>
-    </ProjectsContainer>
+    <SectionBlock id='selected-work' $surface aria-labelledby='projects-title'>
+      <SectionInner>
+        <SectionHeader>
+          <Eyebrow>Selected work</Eyebrow>
+          <SectionTitle id='projects-title'>
+            Systems built for real operational constraints.
+          </SectionTitle>
+          <SectionIntro>
+            A mix of platform architecture, applied AI, data engineering,
+            healthcare interfaces, and open-source product work.
+          </SectionIntro>
+        </SectionHeader>
+        <CuratedProjectGrid projects={featuredProjects} />
+        {showAllLink && (
+          <FooterAction>
+            <SecondaryLink as={Link} to='/portfolio'>
+              View all projects <FaArrowRight aria-hidden='true' />
+            </SecondaryLink>
+          </FooterAction>
+        )}
+      </SectionInner>
+    </SectionBlock>
   );
 };
 

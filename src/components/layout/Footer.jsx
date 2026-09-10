@@ -1,137 +1,181 @@
-// src/components/layout/Footer.js
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaGithub, FaLinkedin, FaTwitter, FaArrowUp } from 'react-icons/fa';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { FaArrowUp, FaGithub, FaLinkedin } from 'react-icons/fa';
+import { profile } from '../../data/profile';
 
 const FooterContainer = styled.footer`
-  background: ${({ theme }) => theme.background};
-  padding: 4rem 2rem;
-  border-top: 1px solid ${({ theme }) => theme.primary}20;
+  padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 4vw, 2rem) 2rem;
+  border-top: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.surface};
 `;
 
 const FooterContent = styled.div`
-  max-width: 1200px;
+  width: min(1120px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1.3fr repeat(2, minmax(9rem, 0.6fr));
   gap: 2rem;
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 440px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const FooterSection = styled.div`
   h3 {
-    color: ${({ theme }) => theme.primary};
-    margin-bottom: 1.5rem;
+    margin: 0 0 1rem;
+    color: ${({ theme }) => theme.text};
+    font-size: 0.95rem;
+  }
+
+  p {
+    max-width: 34ch;
+    margin: 0.35rem 0;
+    color: ${({ theme }) => theme.textMuted};
+    line-height: 1.65;
   }
 `;
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.6rem;
   margin-top: 1rem;
 `;
 
 const SocialLink = styled.a`
-  width: 40px;
-  height: 40px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid ${({ theme }) => theme.border};
   border-radius: 50%;
-  background: ${({ theme }) => theme.primary}20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.primary};
-  transition: all 0.3s ease;
+  background: ${({ theme }) => theme.surfaceSubtle};
+  color: ${({ theme }) => theme.text};
+  transition: border-color 160ms ease, color 160ms ease;
 
   &:hover {
-    background: ${({ theme }) => theme.primary};
-    color: white;
-    transform: translateY(-3px);
+    border-color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.primary};
   }
+`;
+
+const FooterNav = styled.nav`
+  display: grid;
+  gap: 0.65rem;
+
+  a {
+    width: fit-content;
+    color: ${({ theme }) => theme.textMuted};
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: ${({ theme }) => theme.primary};
+  }
+`;
+
+const FooterBottom = styled.div`
+  width: min(1120px, 100%);
+  margin: 2.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid ${({ theme }) => theme.border};
+  color: ${({ theme }) => theme.textSubtle};
+  font-size: 0.82rem;
 `;
 
 const BackToTop = styled.button`
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 50px;
-  height: 50px;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 30;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid ${({ theme }) => theme.primaryStrong};
   border-radius: 50%;
   background: ${({ theme }) => theme.primary};
-  color: white;
-  border: none;
+  color: ${({ theme }) => theme.onPrimary};
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px ${({ theme }) => theme.shadow};
 
   &:hover {
-    transform: translateY(-5px);
-    background: ${({ theme }) => theme.secondary};
+    background: ${({ theme }) => theme.primaryStrong};
   }
 `;
 
 const Footer = () => {
   const [showScroll, setShowScroll] = useState(false);
 
-  const checkScrollTop = () => {
-    if (!showScroll && window.pageYOffset > 0) {
-      setShowScroll(true);
-    } else if (showScroll && window.pageYOffset === 0) {
-      setShowScroll(false);
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
+    const checkScrollTop = () => setShowScroll(window.scrollY > 600);
+
+    checkScrollTop();
     window.addEventListener('scroll', checkScrollTop);
     return () => window.removeEventListener('scroll', checkScrollTop);
-  }, [showScroll]);
+  }, []);
 
   return (
     <>
       <FooterContainer>
         <FooterContent>
           <FooterSection>
-            <h3>Mirul Khanal</h3>
-            <p>Modern web solutions for websites, mobile apps and API's</p>
-          </FooterSection>
-
-          <FooterSection>
-            <h3>Connect</h3>
-            <SocialLinks>
-              <SocialLink href='https://github.com/mirulkhanal' target='_blank'>
-                <FaGithub />
+            <h3>{profile.name}</h3>
+            <p>{profile.tagline}</p>
+            <SocialLinks aria-label='Social profiles'>
+              <SocialLink
+                href={profile.links.github}
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='Mirul Khanal on GitHub'>
+                <FaGithub aria-hidden='true' />
               </SocialLink>
               <SocialLink
-                href='https://linkedin.com/in/mirulkhanal'
-                target='_blank'>
-                <FaLinkedin />
-              </SocialLink>
-              <SocialLink
-                href='https://twitter.com/mirulkhanal'
-                target='_blank'>
-                <FaTwitter />
+                href={profile.links.linkedin}
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='Mirul Khanal on LinkedIn'>
+                <FaLinkedin aria-hidden='true' />
               </SocialLink>
             </SocialLinks>
           </FooterSection>
 
           <FooterSection>
+            <h3>Explore</h3>
+            <FooterNav aria-label='Footer navigation'>
+              <Link to='/portfolio'>Projects</Link>
+              <Link to='/resume'>Résumé</Link>
+              <Link to='/contact'>Contact</Link>
+            </FooterNav>
+          </FooterSection>
+
+          <FooterSection>
             <h3>Location</h3>
-            <p>Kathmandu, Nepal</p>
-            <p>GMT +5:45</p>
+            <p>{profile.location}</p>
+            <p>{profile.timezone}</p>
           </FooterSection>
         </FooterContent>
+        <FooterBottom>
+          © {new Date().getFullYear()} {profile.name}. Built with React.
+        </FooterBottom>
       </FooterContainer>
 
       {showScroll && (
-        <BackToTop onClick={scrollToTop}>
-          <FaArrowUp />
+        <BackToTop
+          type='button'
+          onClick={scrollToTop}
+          aria-label='Back to top'>
+          <FaArrowUp aria-hidden='true' />
         </BackToTop>
       )}
     </>

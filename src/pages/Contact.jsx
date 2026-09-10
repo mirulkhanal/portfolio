@@ -1,196 +1,207 @@
-// src/pages/Contact.js
-import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTheme } from '../context/ThemeContext';
+import {
+  FaEnvelope,
+  FaGithub,
+  FaGlobe,
+  FaLinkedin,
+  FaMapMarkerAlt,
+  FaPhone,
+} from 'react-icons/fa';
+import { profile } from '../data/profile';
+import {
+  Eyebrow,
+  PrimaryLink,
+  SectionBlock,
+  SectionHeader,
+  SectionInner,
+  SectionIntro,
+  SectionTitle,
+} from '../components/common/Section';
 
-const ContactContainer = styled.section`
-  padding: 4rem 2rem;
-  background: ${({ theme }) => theme.body};
-  min-height: calc(100vh - 120px);
-  display: flex;
-  align-items: center;
+const ContactSection = styled(SectionBlock)`
+  min-height: 70vh;
 `;
 
 const ContactWrapper = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+  gap: clamp(2rem, 8vw, 6rem);
+  align-items: start;
 
-  @media (max-width: 768px) {
+  @media (max-width: 760px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const Illustration = styled.div`
-  img {
-    width: 100%;
-    height: auto;
-    .primary-color {
-      fill: ${({ theme }) => theme.primary};
-    }
-  }
+const ContactActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
 `;
 
-const FormContainer = styled.div`
-  background: ${({ theme }) => theme.background};
-  padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+const ContactList = styled.ul`
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
 
-const ContactHeader = styled.h2`
-  font-size: 2.5rem;
-  color: ${({ theme }) => theme.primary};
-  margin-bottom: 2rem;
-  text-align: center;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: ${({ theme }) => theme.secondary};
-  }
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid ${({ theme }) => theme.text};
-  border-radius: 4px;
-  font-size: 1rem;
-  background: transparent;
-  color: ${({ theme }) => theme.text};
-  transition: border-color 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.primary};
-  }
-`;
-
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid ${({ theme }) => theme.text};
-  border-radius: 4px;
-  font-size: 1rem;
-  background: transparent;
-  color: ${({ theme }) => theme.text};
-  min-height: 150px;
-  resize: vertical;
-  transition: border-color 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.primary};
-  }
-`;
-
-const SubmitButton = styled.button`
-  width: 100%;
+const ContactCard = styled.a`
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.85rem;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.primary};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 0.85rem;
+  background: ${({ theme }) => theme.surface};
+  color: ${({ theme }) => theme.text};
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.secondary};
+    border-color: ${({ theme }) => theme.primary};
+    transform: translateY(-2px);
   }
 `;
 
-const FormMessage = styled.div`
+const Icon = styled.span`
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: ${({ theme }) => theme.primarySoft};
+  color: ${({ theme }) => theme.primary};
+`;
+
+const ContactLabel = styled.span`
+  display: block;
+  color: ${({ theme }) => theme.textSubtle};
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+`;
+
+const ContactValue = styled.span`
+  display: block;
+  margin-top: 0.2rem;
+  color: ${({ theme }) => theme.text};
+  font-weight: 700;
+  overflow-wrap: anywhere;
+`;
+
+const LocationCard = styled.div`
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.85rem;
   padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 4px;
-  background: ${({ success, theme }) =>
-    success ? theme.primary + '30' : theme.accent + '30'};
-  color: ${({ success, theme }) => (success ? theme.primary : theme.accent)};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 0.85rem;
+  background: ${({ theme }) => theme.surfaceSubtle};
+
+  p {
+    margin: 0.2rem 0 0;
+    color: ${({ theme }) => theme.text};
+    font-weight: 700;
+  }
 `;
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const [status, setStatus] = useState(null);
-  const { theme } = useTheme();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.email.includes('@')) {
-      setStatus({ success: false, message: 'Please enter a valid email' });
-      return;
-    }
-    // Add your form submission logic here
-    setStatus({ success: true, message: 'Message sent successfully!' });
-    setFormData({ name: '', email: '', message: '' });
-  };
+  const contactMethods = [
+    {
+      label: 'Email',
+      value: profile.email,
+      href: `mailto:${profile.email}`,
+      icon: <FaEnvelope aria-hidden='true' />,
+    },
+    {
+      label: 'Phone',
+      value: profile.phone,
+      href: profile.phoneHref,
+      icon: <FaPhone aria-hidden='true' />,
+    },
+    {
+      label: 'LinkedIn',
+      value: 'linkedin.com/in/mirulkhanal',
+      href: profile.links.linkedin,
+      icon: <FaLinkedin aria-hidden='true' />,
+    },
+    {
+      label: 'GitHub',
+      value: 'github.com/mirulkhanal',
+      href: profile.links.github,
+      icon: <FaGithub aria-hidden='true' />,
+    },
+    {
+      label: 'Website',
+      value: 'mirulkhanal.com.np',
+      href: profile.website,
+      icon: <FaGlobe aria-hidden='true' />,
+    },
+  ];
 
   return (
-    <ContactContainer>
-      <ContactWrapper>
-        <Illustration>
-          <img src='contact.svg' />
-        </Illustration>
+    <ContactSection aria-labelledby='contact-title'>
+      <SectionInner>
+        <ContactWrapper>
+          <div>
+            <SectionHeader style={{ marginBottom: 0 }}>
+              <Eyebrow>Contact</Eyebrow>
+              <SectionTitle id='contact-title'>
+                Let’s discuss the problem, not just the stack.
+              </SectionTitle>
+              <SectionIntro>
+                Email is the fastest way to reach me. Include a little context
+                about the product, team, or engineering challenge and I will
+                respond as soon as I can.
+              </SectionIntro>
+            </SectionHeader>
+            <ContactActions>
+              <PrimaryLink href={`mailto:${profile.email}`}>
+                Start an email <FaEnvelope aria-hidden='true' />
+              </PrimaryLink>
+            </ContactActions>
+          </div>
 
-        <FormContainer>
-          <ContactHeader>Get in Touch</ContactHeader>
-          <form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Input
-                type='text'
-                placeholder='Your Name'
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type='email'
-                placeholder='Your Email'
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <TextArea
-                placeholder='Your Message'
-                value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-                required
-              />
-            </FormGroup>
-            <SubmitButton type='submit'>Send Message</SubmitButton>
-          </form>
-        </FormContainer>
-      </ContactWrapper>
-    </ContactContainer>
+          <ContactList aria-label='Ways to contact Mirul Khanal'>
+            {contactMethods.map((method) => (
+              <li key={method.label}>
+                <ContactCard
+                  href={method.href}
+                  target={method.href.startsWith('http') ? '_blank' : undefined}
+                  rel={
+                    method.href.startsWith('http')
+                      ? 'noopener noreferrer'
+                      : undefined
+                  }>
+                  <Icon>{method.icon}</Icon>
+                  <span>
+                    <ContactLabel>{method.label}</ContactLabel>
+                    <ContactValue>{method.value}</ContactValue>
+                  </span>
+                </ContactCard>
+              </li>
+            ))}
+            <li>
+              <LocationCard>
+                <Icon>
+                  <FaMapMarkerAlt aria-hidden='true' />
+                </Icon>
+                <span>
+                  <ContactLabel>Location</ContactLabel>
+                  <p>
+                    {profile.location} · {profile.timezone}
+                  </p>
+                </span>
+              </LocationCard>
+            </li>
+          </ContactList>
+        </ContactWrapper>
+      </SectionInner>
+    </ContactSection>
   );
 };
 

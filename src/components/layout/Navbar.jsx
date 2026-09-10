@@ -1,28 +1,35 @@
-// src/components/layout/Navbar.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTheme } from '../../context/ThemeContext';
-import { FaSun, FaMoon } from 'react-icons/fa';
-import { useEffect } from 'react';
+import { FaBars, FaDownload, FaMoon, FaSun, FaTimes } from 'react-icons/fa';
+import { profile } from '../../data/profile';
 
 const NavContainer = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: ${({ theme }) => theme.background};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 50;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.surface};
+`;
+
+const NavInner = styled.div`
+  display: flex;
+  width: min(1180px, 100%);
+  min-height: 70px;
+  margin: 0 auto;
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 `;
 
 const Brand = styled(Link)`
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
   color: ${({ theme }) => theme.text};
+  font-size: 1.05rem;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+  text-decoration: none;
 
   span {
     color: ${({ theme }) => theme.primary};
@@ -32,142 +39,194 @@ const Brand = styled(Link)`
 const NavLinks = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 0.55rem;
 `;
 
 const NavMenu = styled.ul`
   display: flex;
-  gap: 1.5rem;
+  gap: 0.2rem;
   list-style: none;
   margin: 0;
   padding: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 760px) {
     display: none;
   }
 `;
 
 const NavItem = styled.li`
   a {
+    display: block;
+    padding: 0.6rem 0.7rem;
+    border-radius: 0.55rem;
     text-decoration: none;
-    color: ${({ theme }) => theme.text};
-    font-weight: 500;
-    transition: color 0.2s;
+    color: ${({ theme }) => theme.textMuted};
+    font-size: 0.9rem;
+    font-weight: 700;
 
-    &:hover {
+    &:hover,
+    &.active {
+      background: ${({ theme }) => theme.primarySoft};
       color: ${({ theme }) => theme.primary};
     }
   }
 `;
 
-const MobileMenuButton = styled.button`
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
+const IconButton = styled.button`
+  display: grid;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 0.65rem;
+  background: transparent;
   color: ${({ theme }) => theme.text};
-  padding: 0.5rem;
+  cursor: pointer;
 
-  @media (max-width: 768px) {
-    display: block;
+  &:hover {
+    border-color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.primary};
+  }
+`;
+
+const MobileMenuButton = styled(IconButton)`
+  display: none;
+
+  @media (max-width: 760px) {
+    display: grid;
   }
 `;
 
 const MobileMenu = styled.div`
-  display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'flex' : 'none')};
   flex-direction: column;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: ${({ theme }) => theme.background};
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 99;
+  gap: 0.3rem;
+  padding: 0.5rem clamp(1rem, 4vw, 2rem) 1rem;
+  border-top: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.surface};
 
   a {
-    padding: 0.5rem 1rem;
-    color: ${({ theme }) => theme.text};
+    padding: 0.75rem;
+    border-radius: 0.55rem;
+    color: ${({ theme }) => theme.textMuted};
     text-decoration: none;
+    font-weight: 700;
 
-    &:hover {
+    &:hover,
+    &.active {
+      background: ${({ theme }) => theme.primarySoft};
       color: ${({ theme }) => theme.primary};
     }
   }
-`;
 
-const ThemeToggle = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: ${({ theme }) => theme.text};
-  font-size: 1.2rem;
-  margin-left: 1rem;
+  @media (min-width: 761px) {
+    display: none;
+  }
 `;
 
 const CVButton = styled.a`
-  padding: 0.5rem 1rem;
+  display: inline-flex;
+  min-height: 42px;
+  padding: 0.55rem 0.8rem;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid ${({ theme }) => theme.primary};
   background-color: ${({ theme }) => theme.primary};
-  color: white;
-  border-radius: 4px;
+  color: ${({ theme }) => theme.onPrimary};
+  border-radius: 0.65rem;
   text-decoration: none;
-  font-weight: bold;
-  transition: transform 0.2s;
+  font-size: 0.86rem;
+  font-weight: 750;
 
   &:hover {
-    transform: translateY(-2px);
+    background: ${({ theme }) => theme.primaryStrong};
+  }
+
+  @media (max-width: 520px) {
+    display: none;
   }
 `;
 
 const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
-  const [isMobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    console.log('PAGE MODE SWITCHED: ', isDark ? 'Dark' : 'Light');
-  }, [isDark]);
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false);
+    };
+
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, []);
+
+  const navigation = [
+    { to: '/portfolio', label: 'Projects' },
+    { to: '/resume', label: 'Résumé' },
+    { to: '/contact', label: 'Contact' },
+  ];
+
   return (
-    <NavContainer>
-      <Brand to='/'>
-        <span>Mirul</span> Khanal
-      </Brand>
+    <NavContainer aria-label='Primary navigation'>
+      <NavInner>
+        <Brand to='/' aria-label='Mirul Khanal, home'>
+          <span>Mirul</span> Khanal
+        </Brand>
 
-      <NavLinks>
-        <NavMenu>
-          <NavItem>
-            <Link to='/portfolio'>Portfolio</Link>
-          </NavItem>
-          <NavItem>
-            <Link to='/contact'>Contact</Link>
-          </NavItem>
-        </NavMenu>
+        <NavLinks>
+          <NavMenu>
+            {navigation.map((item) => (
+              <NavItem key={item.to}>
+                <NavLink to={item.to}>{item.label}</NavLink>
+              </NavItem>
+            ))}
+          </NavMenu>
 
-        <ThemeToggle onClick={toggleTheme}>
-          {isDark ? <FaSun /> : <FaMoon />}
-        </ThemeToggle>
+          <IconButton
+            type='button'
+            onClick={toggleTheme}
+            aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}>
+            {isDark ? (
+              <FaSun aria-hidden='true' />
+            ) : (
+              <FaMoon aria-hidden='true' />
+            )}
+          </IconButton>
 
-        <CVButton href='/resume.pdf' target='_blank' rel='noopener noreferrer'>
-          Preview CV
-        </CVButton>
+          <CVButton href={profile.resumePath} download>
+            PDF <FaDownload aria-hidden='true' />
+          </CVButton>
 
-        <MobileMenuButton onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='currentColor'>
-            <path d='M4 6h16M4 12h16M4 18h16' />
-          </svg>
-        </MobileMenuButton>
-      </NavLinks>
+          <MobileMenuButton
+            type='button'
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls='mobile-navigation'
+            aria-label={`${isMobileMenuOpen ? 'Close' : 'Open'} navigation menu`}>
+            {isMobileMenuOpen ? (
+              <FaTimes aria-hidden='true' />
+            ) : (
+              <FaBars aria-hidden='true' />
+            )}
+          </MobileMenuButton>
+        </NavLinks>
+      </NavInner>
 
-      <MobileMenu isOpen={isMobileMenuOpen}>
-        <Link to='/portfolio' onClick={() => setMobileMenuOpen(false)}>
-          Portfolio
-        </Link>
-        <Link to='/contact' onClick={() => setMobileMenuOpen(false)}>
-          Contact
-        </Link>
+      <MobileMenu id='mobile-navigation' $isOpen={isMobileMenuOpen}>
+        {navigation.map((item) => (
+          <NavLink key={item.to} to={item.to}>
+            {item.label}
+          </NavLink>
+        ))}
+        <a href={profile.resumePath} download>
+          Download résumé PDF
+        </a>
       </MobileMenu>
     </NavContainer>
   );
